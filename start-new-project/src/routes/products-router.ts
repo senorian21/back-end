@@ -1,5 +1,5 @@
 import {Request, Response, Router} from "express";
-import {productsRepository} from "../repositories/products-repository";
+import {productsRepository, ProductType} from "../repositories/products-repository";
 import {body, validationResult} from "express-validator";
 import {inputValidationMiddleware} from "../midlewares/input-validation-middleware";
 
@@ -12,9 +12,13 @@ const titleValidation = body('title').isLength({
     max: 30
 }).withMessage("Title < 4 or Title > 30")
 
-productsRoute.get('', (req: Request, res: Response) => {
-    const foundProducts = productsRepository.findProuducts(req.query.title?.toString())
+productsRoute.get('', async (req: Request, res: Response) => {
+    const foundProducts: ProductType[] = await productsRepository.findProuducts(req.query.title?.toString())
+
+
+
     res.send(foundProducts)
+
 })
 
 productsRoute.get('/:id', (req: Request, res: Response) => {
@@ -39,11 +43,11 @@ productsRoute.delete('/:id', (req: Request, res: Response) => {
 productsRoute.post('',
     titleValidation,
     inputValidationMiddleware,
-    (req: Request, res: Response): void => {
+    async (req: Request, res: Response) => {
 
 
 
-        const newProduct = productsRepository.createProduct(req.body.title);
+        const newProduct = await productsRepository.createProduct(req.body.title);
         res.status(201).send(newProduct);
     });
 
