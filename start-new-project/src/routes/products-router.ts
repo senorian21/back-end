@@ -21,8 +21,8 @@ productsRoute.get('', async (req: Request, res: Response) => {
 
 })
 
-productsRoute.get('/:id', (req: Request, res: Response) => {
-    let product = productsRepository.findProductByID(+req.params.id);
+productsRoute.get('/:id', async (req: Request, res: Response) => {
+    let product = await productsRepository.findProductByID(+req.params.id);
     if (product) {
         res.send(product)
     } else {
@@ -30,8 +30,8 @@ productsRoute.get('/:id', (req: Request, res: Response) => {
     }
 })
 
-productsRoute.delete('/:id', (req: Request, res: Response) => {
-    const isDeleted = productsRepository.deleteProduct(+req.params.id)
+productsRoute.delete('/:id', async (req: Request, res: Response) => {
+    const isDeleted = await productsRepository.deleteProduct(+req.params.id)
     if (isDeleted) {
         res.send(204)
     } else {
@@ -44,15 +44,12 @@ productsRoute.post('',
     titleValidation,
     inputValidationMiddleware,
     async (req: Request, res: Response) => {
-
-
-
         const newProduct = await productsRepository.createProduct(req.body.title);
         res.status(201).send(newProduct);
     });
 
-productsRoute.put('/:id', (req: Request, res: Response) => {
-   const isUpdated = productsRepository.updateProduct(+req.params.id, req.body.title)
+productsRoute.put('/:id', async (req: Request, res: Response) => {
+   const isUpdated = await productsRepository.updateProduct(+req.params.id, req.body.title)
     if(isUpdated) {
         const product = productsRepository.findProductByID(+req.params.id)
         res.send(product)

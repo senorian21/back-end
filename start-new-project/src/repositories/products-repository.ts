@@ -16,9 +16,12 @@ export const productsRepository = {
             return products
         }
     },
-    findProductByID (id : number) {
+    async findProductByID (id : number)  {
         let product = products.find(p => p.id === id );
-        return product
+
+            return product
+
+
     },
     async createProduct(title: string): Promise<ProductType>{
         const newProduct = {
@@ -28,7 +31,7 @@ export const productsRepository = {
         products.push(newProduct)
         return newProduct
     },
-    updateProduct(id: number, title: string) {
+    async updateProduct(id: number, title: string) {
         let product = products.find(p => p.id === id);
 
         if (product) {
@@ -39,7 +42,7 @@ export const productsRepository = {
         }
 
     },
-    deleteProduct(id: number) {
+    async deleteProduct(id: number) {
         for(let i = 0; i < products.length; i++) {
             if(products[i].id === id) {
                 products.splice(i, 1);
