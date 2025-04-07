@@ -1,4 +1,4 @@
-import {productsRepository} from "./products-repository";
+import {productsInMemoryRepository} from "./products-in-memory-repository";
 
 const addresses = [{id: 1, title: 'Recpublic'},{id: 2 ,title: 'Sverlovo'}]
 

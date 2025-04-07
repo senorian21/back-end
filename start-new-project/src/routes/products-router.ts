@@ -1,5 +1,5 @@
 import {Request, Response, Router} from "express";
-import {productsRepository, ProductType} from "../repositories/products-repository";
+import {productsInMemoryRepository, ProductType} from "../repositories/products-db-repository";
 import {body, validationResult} from "express-validator";
 import {inputValidationMiddleware} from "../midlewares/input-validation-middleware";
 
@@ -13,7 +13,7 @@ const titleValidation = body('title').isLength({
 }).withMessage("Title < 4 or Title > 30")
 
 productsRoute.get('', async (req: Request, res: Response) => {
-    const foundProducts: ProductType[] = await productsRepository.findProuducts(req.query.title?.toString())
+    const foundProducts: ProductType[] = await productsInMemoryRepository.findProuducts(req.query.title?.toString())
 
 
 
@@ -22,7 +22,7 @@ productsRoute.get('', async (req: Request, res: Response) => {
 })
 
 productsRoute.get('/:id', async (req: Request, res: Response) => {
-    let product = await productsRepository.findProductByID(+req.params.id);
+    let product = await productsInMemoryRepository.findProductByID(+req.params.id);
     if (product) {
         res.send(product)
     } else {
@@ -31,7 +31,7 @@ productsRoute.get('/:id', async (req: Request, res: Response) => {
 })
 
 productsRoute.delete('/:id', async (req: Request, res: Response) => {
-    const isDeleted = await productsRepository.deleteProduct(+req.params.id)
+    const isDeleted = await productsInMemoryRepository.deleteProduct(+req.params.id)
     if (isDeleted) {
         res.send(204)
     } else {
@@ -44,14 +44,15 @@ productsRoute.post('',
     titleValidation,
     inputValidationMiddleware,
     async (req: Request, res: Response) => {
-        const newProduct = await productsRepository.createProduct(req.body.title);
+        console.log(req.body)
+        const newProduct = await productsInMemoryRepository.createProduct(req.body.title);
         res.status(201).send(newProduct);
     });
 
 productsRoute.put('/:id', async (req: Request, res: Response) => {
-   const isUpdated = await productsRepository.updateProduct(+req.params.id, req.body.title)
+   const isUpdated = await productsInMemoryRepository.updateProduct(+req.params.id, req.body.title)
     if(isUpdated) {
-        const product = productsRepository.findProductByID(+req.params.id)
+        const product = await productsInMemoryRepository.findProductByID(+req.params.id)
         res.send(product)
     } else {
         res.send(404)
