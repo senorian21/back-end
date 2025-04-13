@@ -1,6 +1,6 @@
 import {productsCollection, ProductType} from "./db";
 
-export const productsInMemoryRepository = {
+export const productsRepository = {
     async findProuducts (title : string | null | undefined): Promise<ProductType[]> {
         const filter:any = { }
 
@@ -18,19 +18,13 @@ export const productsInMemoryRepository = {
     async findProductByID (id : number) : Promise<ProductType | null>  {
         let product = await productsCollection
             .findOne({id: id})
-        if(!product){
-            return null;
-        } else {
             return product;
-        }
+
     },
 
 
-    async createProduct(title: string): Promise<ProductType>{
-        const newProduct = {
-            id: Date.now(),
-            title: title,
-        }
+    async createProduct(newProduct: ProductType): Promise<ProductType>{
+
         await productsCollection.insertOne(newProduct)
         return newProduct
     },
